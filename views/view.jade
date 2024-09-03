@@ -1,0 +1,41 @@
+html
+  head
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
+  body
+    // FontAwesome home icon that leads to the home page
+    a(href='/') 
+      i.fas.fa-home.fa-2x
+
+    h1= title
+    table(border=3)
+      thead
+        tr
+          each val, key in data[0]
+            th= key
+          th Azioni
+      tbody
+        each row in data
+          tr
+            td
+              img(src=row[Object.keys(row)[0]], alt='Image', width='100')
+            // Altre colonne con i valori
+            each val, key in row
+              if key !== Object.keys(row)[0]
+                if key === 'Voto'
+                  td(style=`font-size: 20px; color:${val < 4 ? "#8B0000" : val < 5 ? "red" : val < 6 ? "orange" : val < 8 ? "darkgreen" : "lightgreen"}`)= val
+                else if key === 'Possesso'
+                  if val === 'Non Posseduto'
+                    td(style='color: #8B0000')= val
+                  else
+                    td= val
+                else
+                  td= val
+            // Colonna con l'icona di cancellazione
+            td
+              form(action='/delete', method='POST')
+                input(type='hidden', name='id', value=row['Nome'])
+                button(type='submit', style='background:none; border:none; cursor:pointer')
+                  i.fas.fa-trash.fa-2x(style='color:red')

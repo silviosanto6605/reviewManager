@@ -1,0 +1,6 @@
+node_modules/
+yarn.lock
+data.csv
+data.db
+.vscode/
+package-lock.json
