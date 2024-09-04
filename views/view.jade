@@ -19,11 +19,12 @@ html
       tbody
         each row in data
           tr
+            td= row[Object.keys(row)[0]]
             td
-              img(src=row[Object.keys(row)[0]], alt='Image', width='100')
+              img(src=row[Object.keys(row)[1]], alt='Image', width='100')
             // Altre colonne con i valori
             each val, key in row
-              if key !== Object.keys(row)[0]
+              if key !== Object.keys(row)[0] && key !== Object.keys(row)[1]
                 if key === 'Voto'
                   td(style=`font-size: 20px; color:${val < 4 ? "#8B0000" : val < 5 ? "red" : val < 6 ? "orange" : val < 8 ? "darkgreen" : "lightgreen"}`)= val
                 else if key === 'Possesso'
@@ -39,3 +40,10 @@ html
                 input(type='hidden', name='id', value=row['Nome'])
                 button(type='submit', style='background:none; border:none; cursor:pointer')
                   i.fas.fa-trash.fa-2x(style='color:red')
+
+            // Colonna con l'icona di modifica
+            td
+              form(action='/edit', method='GET')
+                input(type='hidden', name='id', value=row['ID'])
+                button(type='submit', style='background:none; border:none; cursor:pointer')
+                  i.fas.fa-edit.fa-2x(style='color:blue')

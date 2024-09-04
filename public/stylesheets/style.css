@@ -12,3 +12,28 @@ td {
   padding: 10px;
   border: 1px solid #ccc;
 }
+
+#editButton, #updateButton {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#editButton {
+  background-color: #eee;
+}
+
+#updateButton {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.album-details input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+}

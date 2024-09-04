@@ -1,7 +1,6 @@
 var express = require('express');
-var sqlite3 = require('sqlite3').verbose();
-
 var router = express.Router();
+var sqlite3 = require('sqlite3').verbose();
 
 router.get('/', function(req, res) {
   var results = [];

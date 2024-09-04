@@ -1,0 +1,15 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= album[Object.keys(album)[2]]+'Edit'
+  body
+    .album-container
+      .album-cover
+        img(src=album[Object.keys(album)[1]] alt="Copertina album" width=300)
+      .album-details
+        h2= album[Object.keys(album)[2]]
+        p Artista: #{album[Object.keys(album)[3]]}
+        p Data di ascolto: #{album[Object.keys(album)[4]]}      
+        p Voto: #{album[Object.keys(album)[5]]}
