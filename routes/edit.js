@@ -21,8 +21,6 @@ router.get('/', function(req, res) {
       return res.status(404).send('Album not found');
     }
 
-    // Aggiungi un log per verificare i dati passati
-    console.log('Album data:', row);
 
     res.render('edit', { title: 'Edit album entry', album: row });
   });
@@ -32,7 +30,6 @@ router.get('/', function(req, res) {
 
 
 router.post('/', function(req, res) {
-  // modificare il record nel database sqlite fatto di (Cover, Nome,Artista,Data,Voto,Possesso,Genere)
   var db = new sqlite3.Database('data.db');
   var albumId = req.query.id;
 
@@ -62,8 +59,9 @@ router.post('/', function(req, res) {
 
       res.redirect('/edit?id=' + albumId);
     });
-  
-    db.close();
-  });
+
+  db.close();
+});
+
 
 module.exports = router;
