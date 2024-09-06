@@ -9,6 +9,10 @@ html
     a(href='/') 
       i.fas.fa-home.fa-2x
 
+    // Add new album button positioned at the top-right
+    button(onclick='openModal()', class='add-album-btn')
+      i.fas.fa-plus.fa-2x(style='color:green')
+
     h1= title
     table(border=3)
       thead
@@ -22,7 +26,6 @@ html
             td= row[Object.keys(row)[0]]
             td
               img(src=row[Object.keys(row)[1]], alt='Image', width='100')
-            // Altre colonne con i valori
             each val, key in row
               if key !== Object.keys(row)[0] && key !== Object.keys(row)[1]
                 if key === 'Voto'
@@ -34,16 +37,64 @@ html
                     td= val
                 else
                   td= val
-            // Colonna con l'icona di cancellazione
+            // Delete icon column
             td
               form(action='/delete', method='POST')
                 input(type='hidden', name='id', value=row['Nome'])
                 button(type='submit', style='background:none; border:none; cursor:pointer')
                   i.fas.fa-trash.fa-2x(style='color:red')
 
-            // Colonna con l'icona di modifica
+            // Edit icon column
             td
               form(action='/edit', method='GET')
                 input(type='hidden', name='id', value=row['ID'])
                 button(type='submit', style='background:none; border:none; cursor:pointer')
                   i.fas.fa-edit.fa-2x(style='color:blue')
+
+    // Modal for adding new album
+    .modal(id='myModal', style='display:none')
+      .modal-content
+        span(class='close', onclick='closeModal()') &times;
+        h2 Add New Album
+        form(action='/edit/add', method='POST', class='modal-form')
+          .form-group
+            label(for='cover') Cover URL:
+            input(type='text', name='cover' required)
+          .form-group
+            label(for='name') Album Name:
+            input(type='text', name='name' required)
+          .form-group
+            label(for='artist') Artist:
+            input(type='text', name='artist' required)
+          .form-group
+            label(for='date') Date:
+            input(type='text', name='date' required)
+          .form-group
+            label(for='rating') Rating:
+            input(type='number', name='rating' min='0' max='10' step="0.25" required)
+          .form-group
+            label(for='genre') Genre:
+            select(name='genre', required)
+              option(value='Hip Hop/Rap') Hip Hop/Rap
+              option(value='Pop/R&B/Cantautorato') Pop/R&B/Cantautorato
+              option(value='Rock') Rock
+              option(value='Altro') Altro
+
+          .form-group
+            label(for='possession') Possession:
+            select(name='possession', required)
+              option(value='Posseduto') Posseduto
+              option(value='Non Posseduto') Non Posseduto
+          
+          button(type='submit', class='btn') Add Album
+        
+        
+
+    script.
+      function openModal() {
+        document.getElementById('myModal').style.display = 'block';
+      }
+
+      function closeModal() {
+        document.getElementById('myModal').style.display = 'none';
+      }
