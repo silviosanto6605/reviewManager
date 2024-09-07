@@ -4,3 +4,4 @@ data.csv
 data.db
 .vscode/
 package-lock.json
+main.py

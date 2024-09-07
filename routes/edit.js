@@ -118,7 +118,7 @@ router.post('/add', function (req, res) {
   });
 });
 
-router.post('/add/csv', upload.single('csvFile'), function(req, res) {
+router.post('/add/csv', upload.single('csvFile'), function (req, res) {
   var db = new sqlite3.Database('data.db');
 
   // Verifica che il file sia presente
@@ -137,9 +137,8 @@ router.post('/add/csv', upload.single('csvFile'), function(req, res) {
       albums.push(row);
     })
     .on('end', () => {
-
-      // Trova il valore massimo non coperto per l'ID
-      db.get('SELECT MAX(ID) as maxId FROM Album', function(err, row) {
+      // Trova il massimo ID una volta prima di importare gli album
+      db.get('SELECT MAX(ID) as maxId FROM Album', function (err, row) {
         if (err) {
           console.error('Errore durante la ricerca dell\'ID massimo:', err);
           return res.status(500).send('Internal Server Error');
@@ -150,7 +149,16 @@ router.post('/add/csv', upload.single('csvFile'), function(req, res) {
         // Inserisci ogni album nel database
         db.serialize(() => {
           albums.forEach(album => {
-            var { ID, Cover, Nome, Artista, Data, Voto, Genere, Possesso } = album;
+            var {
+              ID,
+              Cover,
+              Nome,
+              Artista,
+              Data,
+              Voto,
+              Genere,
+              Possesso
+            } = album;
 
             // Controlla se ci sono campi mancanti e salta la riga se necessario
             if (!Cover || !Nome || !Artista || !Data || !Voto || !Possesso || !Genere) {
@@ -159,7 +167,7 @@ router.post('/add/csv', upload.single('csvFile'), function(req, res) {
             }
 
             // Verifica se un album con lo stesso Nome, Artista e Data esiste già
-            db.get(`SELECT * FROM Album WHERE Nome = ? AND Artista = ? AND Data = ?`, [Nome, Artista, Data], function(err, existingAlbum) {
+            db.get('SELECT * FROM Album WHERE Nome = ? AND Artista = ? AND Data = ?', [Nome, Artista, Data], function (err, existingAlbum) {
               if (err) {
                 console.error('Errore durante la query dell\'album:', err);
                 return;
@@ -167,39 +175,30 @@ router.post('/add/csv', upload.single('csvFile'), function(req, res) {
 
               if (!existingAlbum) {
                 // Se l'album non esiste, assegna l'ID e inserisci
-
-                if (!ID || ID >= nextId) {
-                  // Usa l'ID fornito se esiste e non è coperto
-                  var finalId = ID || nextId;
-                  nextId = finalId++; // Incrementa il prossimo ID
-
-                  // Inserisci l'album con l'ID assegnato
-                  insertAlbum(db, nextId, Cover, Nome, Artista, Data, Voto, Genere, Possesso);
-                } else {    
-                  insertAlbum(db, ID, Cover, Nome, Artista, Data, Voto, Genere, Possesso);
-
-                }
-              }
-              else{
-                console.error('Album già esistente:'+Nome);
+                var finalId = ID && ID >= nextId ? ID : nextId++;
+                
+                // Inserisci l'album con l'ID assegnato
+                insertAlbum(db, finalId, Cover, Nome, Artista, Data, Voto, Genere, Possesso);
               }
             });
           });
-        });
 
-        // Pulisci: cancella il file CSV caricato
-        fs.unlink(csvFilePath, (err) => {
-          if (err) {
-            console.error('Errore durante l\'eliminazione del file CSV:', err);
-          }
-        });
+          // Pulisci: cancella il file CSV caricato
+          fs.unlink(csvFilePath, (err) => {
+            if (err) {
+              console.error('Errore durante l\'eliminazione del file CSV:', err);
+            }
+          });
 
-        // Reindirizza alla vista principale dopo aver elaborato gli album
-        console.log('Importazione file csv completata!');
-        res.redirect('/view');
+          // Reindirizza alla vista principale dopo aver elaborato gli album
+          console.log('Importazione file csv completata!');
+          res.redirect('/view');
+        });
       });
     });
 });
+
+
 
 // Funzione per inserire l'album nel database
 function insertAlbum(db, id, cover, name, artist, date, rating, genre, possession) {
