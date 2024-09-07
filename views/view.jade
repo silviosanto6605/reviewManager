@@ -1,10 +1,21 @@
 doctype html
 html(lang="en")
   head
-    meta(name='viewport' content='width=device-width, initial-scale=1')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
+    style.
+      /* Simple CSS for sorting indicators */
+      th.sorted-asc::after {
+        content: ' ▲';
+      }
+      th.sorted-desc::after {
+        content: ' ▼';
+      }
+      th.no-sort::after {
+        content: '';
+      }
   body
     // FontAwesome home icon that leads to the home page
     a(href='/') 
@@ -15,40 +26,43 @@ html(lang="en")
       i.fas.fa-plus.fa-2x(style='color:green')
 
     h1= title
-    table(border=3)
+    // Search bar
+    .search-bar(style='text-align: center; margin-bottom: 20px;')
+      input(type='text', id='searchInput', placeholder='Search albums...' style='padding: 10px; width: 300px;')
+
+    table(id='albumTable', border=3)
       thead
         tr
           each val, key in data[0]
-            th= key
+            if key === 'ID' || key === 'Cover'
+              th #{key}
+            else
+              th(onclick=`sortTable('${key}')`, class='sortable no-sort') #{key}
           th Azioni
       tbody
         each row in data
           tr
-            td= row[Object.keys(row)[0]]
+            td= row.ID
             td
-              img(src=row[Object.keys(row)[1]], alt='Image', width='100')
-            each val, key in row
-              if key !== Object.keys(row)[0] && key !== Object.keys(row)[1]
-                if key === 'Voto'
-                  td(style=`font-size: 20px; color:${val < 4 ? "#8B0000" : val < 5 ? "red" : val < 6 ? "orange" : val < 8 ? "darkgreen" : "lightgreen"}`)= val
-                else if key === 'Possesso'
-                  if val === 'Non Posseduto'
-                    td(style='color: #8B0000')= val
-                  else
-                    td= val
-                else
-                  td= val
+              img(src=row.Cover, alt='Image', width='100')
+            td= row.Nome
+            td= row.Artista
+            td= row.Data
+            td(style=`font-size: 20px; color:${row.Voto < 4 ? "#8B0000" : row.Voto < 5 ? "red" : row.Voto < 6 ? "orange" : row.Voto < 8 ? "darkgreen" : "lightgreen"}`)= row.Voto
+            td= row.Genere
+            td(style=`color: ${row.Possesso === 'Non Posseduto' ? '#8B0000' : ''}`)= row.Possesso
+
             // Delete icon column
             td
               form(action='/delete', method='POST')
-                input(type='hidden', name='id', value=row['Nome'])
+                input(type='hidden', name='id', value=row.ID)
                 button(type='submit', style='background:none; border:none; cursor:pointer')
                   i.fas.fa-trash.fa-2x(style='color:red')
 
             // Edit icon column
             td
               form(action='/edit', method='GET')
-                input(type='hidden', name='id', value=row['ID'])
+                input(type='hidden', name='id', value=row.ID)
                 button(type='submit', style='background:none; border:none; cursor:pointer')
                   i.fas.fa-edit.fa-2x(style='color:blue')
 
@@ -61,19 +75,19 @@ html(lang="en")
         form(action='/edit/add', method='POST', class='modal-form')
           .form-group
             label(for='cover') Cover URL:
-            input(type='text', name='cover' required)
+            input(type='text', name='cover', required)
           .form-group
             label(for='name') Album Name:
-            input(type='text', name='name' required)
+            input(type='text', name='name', required)
           .form-group
             label(for='artist') Artist:
-            input(type='text', name='artist' required)
+            input(type='text', name='artist', required)
           .form-group
             label(for='date') Date:
-            input(type='text', name='date' required)
+            input(type='text', name='date', required)
           .form-group
             label(for='rating') Rating:
-            input(type='number', name='rating' min='0' max='10' step="0.25" required)
+            input(type='number', name='rating', min='0', max='10', step="0.25", required)
           .form-group
             label(for='genre') Genre:
             select(name='genre', required)
@@ -94,7 +108,7 @@ html(lang="en")
         form(action='/edit/add/csv', method='POST', enctype='multipart/form-data')
           .form-group
             label(for='csvFile') Select CSV File:
-            input(type='file', name='csvFile' accept='.csv' required)
+            input(type='file', name='csvFile', accept='.csv', required)
           button(type='submit', class='btn') Upload CSV
 
     script.
@@ -105,3 +119,71 @@ html(lang="en")
       function closeModal() {
         document.getElementById('myModal').style.display = 'none';
       }
+
+      function sortTable(column) {
+        var table = document.getElementById("albumTable");
+        var tbody = table.querySelector("tbody");
+        var rows = Array.from(tbody.querySelectorAll("tr"));
+        var headers = Array.from(table.querySelectorAll("thead th"));
+        var index = headers.findIndex(th => th.textContent.trim() === column);
+        var currentSortOrder = table.dataset.sortOrder || 'none';
+        var newSortOrder;
+
+        if (currentSortOrder === 'none') {
+          newSortOrder = 'asc';
+        } else if (currentSortOrder === 'asc') {
+          newSortOrder = 'desc';
+        } else {
+          newSortOrder = 'none';
+        }
+
+        if (newSortOrder === 'none') {
+          rows.forEach(row => tbody.appendChild(row)); // Reset order
+        } else {
+          rows.sort((rowA, rowB) => {
+            var cellA = rowA.children[index].textContent.trim();
+            var cellB = rowB.children[index].textContent.trim();
+            
+            if (column === 'Data') {
+              // Parse date strings if sorting by date
+              cellA = new Date(cellA.split('/').reverse().join('-'));
+              cellB = new Date(cellB.split('/').reverse().join('-'));
+            } else if (column === 'Voto') {
+              // Parse numbers if sorting by rating
+              cellA = parseFloat(cellA);
+              cellB = parseFloat(cellB);
+            }
+
+            return newSortOrder === 'asc' ? (cellA > cellB ? 1 : -1) : (cellA < cellB ? 1 : -1);
+          });
+
+          // Append sorted rows
+          rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // Update sort order attribute
+        table.dataset.sortOrder = newSortOrder;
+
+        // Update column sort indicators
+        headers.forEach(th => th.classList.remove('sorted-asc', 'sorted-desc', 'no-sort'));
+        if (newSortOrder !== 'none') {
+          headers[index].classList.add(newSortOrder === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        } else {
+          headers[index].classList.add('no-sort');
+        }
+      }
+
+      // Initial sorting state
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('albumTable').dataset.sortOrder = 'none';
+      });
+
+      // Real-time search
+      document.getElementById('searchInput').addEventListener('input', function() {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#albumTable tbody tr');
+        rows.forEach(row => {
+          var rowText = row.textContent.toLowerCase();
+          row.style.display = rowText.includes(searchValue) ? '' : 'none';
+        });
+      });

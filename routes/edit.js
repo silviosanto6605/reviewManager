@@ -181,7 +181,7 @@ router.post('/add/csv', upload.single('csvFile'), function(req, res) {
                 }
               }
               else{
-                console.error('Album già esistente:');
+                console.error('Album già esistente:'+Nome);
               }
             });
           });
