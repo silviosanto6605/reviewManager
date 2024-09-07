@@ -1,4 +1,5 @@
-html
+doctype html
+html(lang="en")
   head
     meta(name='viewport' content='width=device-width, initial-scale=1')
     title= title
@@ -56,6 +57,7 @@ html
       .modal-content
         span(class='close', onclick='closeModal()') &times;
         h2 Add New Album
+
         form(action='/edit/add', method='POST', class='modal-form')
           .form-group
             label(for='cover') Cover URL:
@@ -85,10 +87,15 @@ html
             select(name='possession', required)
               option(value='Posseduto') Posseduto
               option(value='Non Posseduto') Non Posseduto
-          
           button(type='submit', class='btn') Add Album
-        
-        
+
+        // Form to upload CSV file
+        h3 Upload CSV
+        form(action='/edit/add/csv', method='POST', enctype='multipart/form-data')
+          .form-group
+            label(for='csvFile') Select CSV File:
+            input(type='file', name='csvFile' accept='.csv' required)
+          button(type='submit', class='btn') Upload CSV
 
     script.
       function openModal() {

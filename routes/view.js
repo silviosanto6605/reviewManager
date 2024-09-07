@@ -6,7 +6,10 @@ router.get('/', function(req, res) {
   var results = [];
   var db = new sqlite3.Database('data.db');
 
-  db.all('SELECT * FROM Album', function(err, rows) {
+  // Modifica della query SQL per ordinare per data di ascolto decrescente
+  db.all(`SELECT * FROM Album ORDER BY 
+          strftime('%Y-%m-%d', substr(Data, 7, 4) || '-' || substr(Data, 4, 2) || '-' || substr(Data, 1, 2)) DESC`, 
+  function(err, rows) {
     if (err) {
       console.error(err);
       return res.status(500).send('Internal Server Error');
