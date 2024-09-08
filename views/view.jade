@@ -16,6 +16,7 @@ html(lang="en")
       th.no-sort::after {
         content: '';
       }
+
   body
     // FontAwesome home icon that leads to the home page
     a(href='/') 
@@ -26,45 +27,50 @@ html(lang="en")
       i.fas.fa-plus.fa-2x(style='color:green')
 
     h1= title
-    // Search bar
-    .search-bar(style='text-align: center; margin-bottom: 20px;')
-      input(type='text', id='searchInput', placeholder='Search albums...' style='padding: 10px; width: 300px;')
 
-    table(id='albumTable', border=3)
-      thead
-        tr
-          each val, key in data[0]
-            if key === 'ID' || key === 'Cover'
-              th #{key}
-            else
-              th(onclick=`sortTable('${key}')`, class='sortable no-sort') #{key}
-          th Azioni
-      tbody
-        each row in data
+    // If there is a message (e.g., no data), display it
+    if message
+      p(style="color: red")= message
+    else
+      // Search bar
+      .search-bar(style='text-align: center; margin-bottom: 20px;')
+        input(type='text', id='searchInput', placeholder='Search albums...' style='padding: 10px; width: 300px;')
+
+      table(id='albumTable', border=3)
+        thead
           tr
-            td= row.ID
-            td
-              img(src=row.Cover, alt='Image', width='100')
-            td= row.Nome
-            td= row.Artista
-            td= row.Data
-            td(style=`font-size: 20px; color:${row.Voto < 4 ? "#8B0000" : row.Voto < 5 ? "red" : row.Voto < 6 ? "orange" : row.Voto < 8 ? "darkgreen" : "lightgreen"}`)= row.Voto
-            td= row.Genere
-            td(style=`color: ${row.Possesso === 'Non Posseduto' ? '#8B0000' : ''}`)= row.Possesso
+            each val, key in data[0]
+              if key === 'ID' || key === 'Cover'
+                th #{key}
+              else
+                th(onclick=`sortTable('${key}')`, class='sortable no-sort') #{key}
+            th Azioni
+        tbody
+          each row in data
+            tr
+              td= row.ID
+              td
+                img(src=row.Cover, alt='Image', width='100')
+              td= row.Nome
+              td= row.Artista
+              td= row.Data
+              td(style=`font-size: 20px; color:${row.Voto < 4 ? "#8B0000" : row.Voto < 5 ? "red" : row.Voto < 6 ? "orange" : row.Voto < 8 ? "darkgreen" : "lightgreen"}`)= row.Voto
+              td= row.Genere
+              td(style=`color: ${row.Possesso === 'Non Posseduto' ? '#8B0000' : ''}`)= row.Possesso
 
-            // Delete icon column
-            td
-              form(action='/delete', method='POST')
-                input(type='hidden', name='id', value=row.ID)
-                button(type='submit', style='background:none; border:none; cursor:pointer')
-                  i.fas.fa-trash.fa-2x(style='color:red')
+              // Delete icon column
+              td
+                form(action='/delete', method='POST')
+                  input(type='hidden', name='id', value=row.ID)
+                  button(type='submit', style='background:none; border:none; cursor:pointer')
+                    i.fas.fa-trash.fa-2x(style='color:red')
 
-            // Edit icon column
-            td
-              form(action='/edit', method='GET')
-                input(type='hidden', name='id', value=row.ID)
-                button(type='submit', style='background:none; border:none; cursor:pointer')
-                  i.fas.fa-edit.fa-2x(style='color:blue')
+              // Edit icon column
+              td
+                form(action='/edit', method='GET')
+                  input(type='hidden', name='id', value=row.ID)
+                  button(type='submit', style='background:none; border:none; cursor:pointer')
+                    i.fas.fa-edit.fa-2x(style='color:blue')
 
     // Modal for adding new album
     .modal(id='myModal', style='display:none')
@@ -95,7 +101,6 @@ html(lang="en")
               option(value='Pop/R&B/Cantautorato') Pop/R&B/Cantautorato
               option(value='Rock') Rock
               option(value='Altro') Altro
-
           .form-group
             label(for='possession') Possession:
             select(name='possession', required)
