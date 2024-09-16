@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker compose build default
-    - run: docker tag review-manager:latest review-manager:latest
+      run: docker compose build app
+    - run: docker tag reviewmanager-app:latest review-manager:latest
 
 
   deploy:
