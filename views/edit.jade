@@ -6,83 +6,74 @@ html(lang="en")
     title= album.Nome + ' - Edit'
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css") 
     script.
-      // Script per abilitare la modalità modifica
       function enableEditMode() {
         document.querySelectorAll('.editable').forEach(function(element) {
           element.removeAttribute('readonly');
-          element.style.border = '1px solid #ccc';  // Aggiungi bordo per indicare che il campo è modificabile
+          element.style.border = '1px solid #ccc';  
         });
         document.getElementById('edit-button').style.display = 'none';
         document.getElementById('confirm-button').style.display = 'inline-block';
-        document.getElementById('coverInputContainer').style.display = 'block';  // Mostra il campo per l'URL della copertina
+        document.getElementById('coverInputContainer').style.display = 'block';  
       }
   body
   a(href='/view') 
-      //back icon fontawesome
-      i.fas.fa-arrow-left.fa-2x
-      br
-      br
-      br
+    //back icon fontawesome
+    i.fas.fa-arrow-left.fa-2x
+    br
+    br
+    br
 
 
     .album-container(style="display: flex; align-items: flex-start;")
       .album-cover
         img(id="albumCoverImage" src=album.Cover alt="Copertina album" width=300)
 
-        // URL Copertina (visibile solo in modalità modifica)
-       
-      
+        // Cover URL (in edit mode)
+
+
       .album-details(style="margin-left: 20px;")
         form(action='/edit?id=' + album.ID method='post')
-          
-          // Nome dell'album modificabile
+
           p
             | Nome Album:
             input(type='text' name='name' class='editable' value=album.Nome readonly=true)
 
-          // Artista modificabile
           p
             | Artista:
             input(type='text' name='artist' class='editable' value=album.Artista readonly=true)
 
-          // Data di ascolto come testo modificabile
           p
             | Data di ascolto:
             input(type='text' name='date' class='editable' value=album.Data readonly=true)
 
-          // Voto modificabile
           p
             | Voto:
             input(type='number' name='rating' class='editable' value=album.Voto readonly=true)
 
-          // Possesso modificabile
           p
             | Possesso:
             input(type='text' name='possession' class='editable' value=album.Possesso readonly=true)
 
-          // Genere modificabile
           p
             | Genere:
             input(type='text' name='genre' class='editable' value=album.Genere readonly=true)
-          
+
           p#coverInputContainer(style="display: none;")  
           | URL Copertina:
           input(type='text' id='coverInput' name='cover' class='editable' value=album.Cover readonly=true)
 
           br
           br
-          // Bottone per attivare la modalità modifica
           button(id='edit-button' type='button' style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;" onclick="enableEditMode()")
             i(class="fas fa-edit") 
             |  Modifica Album
 
-          // Bottone per confermare le modifiche
           button(id='confirm-button' type='submit' style="display: none; padding: 10px 20px; background-color: #008CBA; color: white; border: none; cursor: pointer;")
             i(class="fas fa-check")  
             |  Conferma Modifiche
 
     script.
-      // Cambia l'immagine quando si modifica l'URL della copertina
+      // Change image on cover URL change
       document.getElementById('coverInput').addEventListener('input', function() {
         document.getElementById('albumCoverImage').src = this.value;
       });

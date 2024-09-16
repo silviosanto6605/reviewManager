@@ -12,7 +12,7 @@ var upload = multer({
   dest: 'uploads/'
 });
 
-// Route per visualizzare un album specifico per ID
+// Route to get a specific album for editing
 router.get('/', function (req, res) {
   var db = new sqlite3.Database('data.db');
   var albumId = req.query.id;
@@ -40,7 +40,7 @@ router.get('/', function (req, res) {
   db.close();
 });
 
-// Route per aggiornare un album esistente
+// Route to update existing album
 router.post('/', function (req, res) {
   var db = new sqlite3.Database('data.db');
   var albumId = req.query.id;
@@ -77,7 +77,7 @@ router.post('/', function (req, res) {
   db.close();
 });
 
-// Route per aggiungere un nuovo album
+// Route to add a new album
 router.post('/add', function (req, res) {
   var db = new sqlite3.Database('data.db');
   var {
@@ -176,7 +176,7 @@ router.post('/add/csv', upload.single('csvFile'), function (req, res) {
               if (!existingAlbum) {
                 // Se l'album non esiste, assegna l'ID e inserisci
                 var finalId = ID && ID >= nextId ? ID : nextId++;
-                
+
                 // Inserisci l'album con l'ID assegnato
                 insertAlbum(db, finalId, Cover, Nome, Artista, Data, Voto, Genere, Possesso);
               }
@@ -200,16 +200,16 @@ router.post('/add/csv', upload.single('csvFile'), function (req, res) {
 
 
 
-// Funzione per inserire l'album nel database
+// This inserts a new album into the database
 function insertAlbum(db, id, cover, name, artist, date, rating, genre, possession) {
   db.run(`INSERT INTO Album (ID, Cover, Nome, Artista, Data, Voto, Genere, Possesso) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [id, cover, name, artist, date, rating, genre, possession],
-    function(err) {
+    function (err) {
       if (err) {
         console.error('Errore durante l\'inserimento dell\'album:', err);
       }
     });
-    console.log('Inserimento dell\'album completato:', id, name, artist, date);
+  console.log('Inserimento dell\'album completato:', id, name, artist, date);
 }
 
 

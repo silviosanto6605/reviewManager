@@ -12,7 +12,9 @@ td {
   padding: 10px;
   border: 1px solid #ccc;
 }
-#editButton, #updateButton {
+
+#editButton,
+#updateButton {
   padding: 10px 20px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -25,7 +27,7 @@ td {
 }
 
 #updateButton {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
 }
 
@@ -36,7 +38,7 @@ td {
   border: 1px solid #ccc;
   margin-top: 5px;
 }
-/* Position the add-album button at the top-right corner */
+
 .add-album-btn {
   position: absolute;
   top: 10px;
@@ -46,7 +48,6 @@ td {
   cursor: pointer;
 }
 
-/* Styling for the modal */
 .modal {
   display: none;
   position: fixed;
@@ -92,7 +93,8 @@ td {
   padding-right: 10px;
 }
 
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
   width: 65%;
   padding: 8px;
   border-radius: 4px;
@@ -114,7 +116,6 @@ td {
   background-color: darkgreen;
 }
 
-/* Close button styling */
 .close {
   float: right;
   font-size: 28px;

@@ -1,10 +1,10 @@
 doctype html
 html(lang="en")
   head
-    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
+    link(rel='stylesheet' href='/stylesheets/style.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css')
     style.
       /* Simple CSS for sorting indicators */
       th.sorted-asc::after {
@@ -22,19 +22,17 @@ html(lang="en")
     a(href='/') 
       i.fas.fa-home.fa-2x
 
-    // Add new album button positioned at the top-right
-    button(onclick='openModal()', class='add-album-btn')
+    button(onclick='openModal()' class='add-album-btn')
       i.fas.fa-plus.fa-2x(style='color:green')
 
     h1= title
 
-    // If there is a message (e.g., no data), display it
     if message
       p(style="color: red")= message
     else
       // Search bar
       .search-bar(style='text-align: center; margin-bottom: 20px;')
-        input(type='text', id='searchInput', placeholder='Search albums...' style='padding: 10px; width: 300px;')
+        input(type='text' id='searchInput' placeholder='Search albums...' style='padding: 10px; width: 300px;')
 
       table(id='albumTable', border=3)
         thead
@@ -50,7 +48,7 @@ html(lang="en")
             tr
               td= row.ID
               td
-                img(src=row.Cover, alt='Image', width='100')
+                img(src=row.Cover, alt='Image' width='100')
               td= row.Nome
               td= row.Artista
               td= row.Data
@@ -60,40 +58,39 @@ html(lang="en")
 
               // Delete icon column
               td
-                form(action='/delete', method='POST')
-                  input(type='hidden', name='id', value=row.ID)
-                  button(type='submit', style='background:none; border:none; cursor:pointer')
+                form(action='/delete' method='POST')
+                  input(type='hidden' name='id', value=row.ID)
+                  button(type='submit' style='background:none; border:none; cursor:pointer')
                     i.fas.fa-trash.fa-2x(style='color:red')
 
               // Edit icon column
               td
-                form(action='/edit', method='GET')
-                  input(type='hidden', name='id', value=row.ID)
-                  button(type='submit', style='background:none; border:none; cursor:pointer')
+                form(action='/edit' method='GET')
+                  input(type='hidden' name='id', value=row.ID)
+                  button(type='submit' style='background:none; border:none; cursor:pointer')
                     i.fas.fa-edit.fa-2x(style='color:blue')
 
-    // Modal for adding new album
-    .modal(id='myModal', style='display:none')
+    .modal(id='myModal' style='display:none')
       .modal-content
-        span(class='close', onclick='closeModal()') &times;
+        span(class='close' onclick='closeModal()') &times;
         h2 Add New Album
 
-        form(action='/edit/add', method='POST', class='modal-form')
+        form(action='/edit/add' method='POST' class='modal-form')
           .form-group
             label(for='cover') Cover URL:
-            input(type='text', name='cover', required)
+            input(type='text' name='cover', required)
           .form-group
             label(for='name') Album Name:
-            input(type='text', name='name', required)
+            input(type='text' name='name', required)
           .form-group
             label(for='artist') Artist:
-            input(type='text', name='artist', required)
+            input(type='text' name='artist', required)
           .form-group
             label(for='date') Date:
-            input(type='text', name='date', required)
+            input(type='text' name='date', required)
           .form-group
             label(for='rating') Rating:
-            input(type='number', name='rating', min='0', max='10', step="0.25", required)
+            input(type='number' name='rating' min='0' max='10' step="0.25", required)
           .form-group
             label(for='genre') Genre:
             select(name='genre', required)
@@ -106,15 +103,15 @@ html(lang="en")
             select(name='possession', required)
               option(value='Posseduto') Posseduto
               option(value='Non Posseduto') Non Posseduto
-          button(type='submit', class='btn') Add Album
+          button(type='submit' class='btn') Add Album
 
         // Form to upload CSV file
         h3 Upload CSV
-        form(action='/edit/add/csv', method='POST', enctype='multipart/form-data')
+        form(action='/edit/add/csv' method='POST' enctype='multipart/form-data')
           .form-group
             label(for='csvFile') Select CSV File:
-            input(type='file', name='csvFile', accept='.csv', required)
-          button(type='submit', class='btn') Upload CSV
+            input(type='file' name='csvFile' accept='.csv', required)
+          button(type='submit' class='btn') Upload CSV
 
     script.
       function openModal() {
@@ -148,7 +145,7 @@ html(lang="en")
           rows.sort((rowA, rowB) => {
             var cellA = rowA.children[index].textContent.trim();
             var cellB = rowB.children[index].textContent.trim();
-            
+
             if (column === 'Data') {
               // Parse date strings if sorting by date
               cellA = new Date(cellA.split('/').reverse().join('-'));
@@ -162,7 +159,6 @@ html(lang="en")
             return newSortOrder === 'asc' ? (cellA > cellB ? 1 : -1) : (cellA < cellB ? 1 : -1);
           });
 
-          // Append sorted rows
           rows.forEach(row => tbody.appendChild(row));
         }
 

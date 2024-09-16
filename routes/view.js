@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var sqlite3 = require('sqlite3').verbose();
 
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
   var results = [];
   var db = new sqlite3.Database('data.db');
 
@@ -16,7 +16,7 @@ router.get('/', function(req, res) {
       Voto REAL,
       Genere TEXT,
       Possesso TEXT
-  )`, function(err) {
+  )`, function (err) {
     if (err) {
       console.error(err);
       return res.status(500).send('Error creating table');
@@ -24,25 +24,33 @@ router.get('/', function(req, res) {
 
     // Query the database for all albums and order by the date in descending order
     db.all(`SELECT * FROM Album ORDER BY 
-            strftime('%Y-%m-%d', substr(Data, 7, 4) || '-' || substr(Data, 4, 2) || '-' || substr(Data, 1, 2)) DESC`, 
-    function(err, rows) {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Internal Server Error');
-      }
+            strftime('%Y-%m-%d', substr(Data, 7, 4) || '-' || substr(Data, 4, 2) || '-' || substr(Data, 1, 2)) DESC`,
+      function (err, rows) {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Internal Server Error');
+        }
 
-      // If no rows are returned, send an error message to the view
-      if (rows.length === 0) {
-        return res.render('view', { title: 'Album ascoltati🎵', data: null, message: 'Nessun album trovato nel database.' });
-      }
+        // If no rows are returned, send an error message to the view
+        if (rows.length === 0) {
+          return res.render('view', {
+            title: 'Album ascoltati🎵',
+            data: null,
+            message: 'Nessun album trovato nel database.'
+          });
+        }
 
-      rows.forEach(function(row) {
-        results.push(row);
+        rows.forEach(function (row) {
+          results.push(row);
+        });
+
+        // Render the view with the results
+        res.render('view', {
+          title: 'Album ascoltati🎵',
+          data: results,
+          message: null
+        });
       });
-
-      // Render the view with the results
-      res.render('view', { title: 'Album ascoltati🎵', data: results, message: null });
-    });
   });
 
   db.close();
