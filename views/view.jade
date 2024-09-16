@@ -21,9 +21,16 @@ html(lang="en")
     // FontAwesome home icon that leads to the home page
     a(href='/') 
       i.fas.fa-home.fa-2x
-
+    
+    
     button(onclick='openModal()' class='add-album-btn')
       i.fas.fa-plus.fa-2x(style='color:green')
+    
+
+    form(action='/view/download-csv' method='POST' style='display:inline')
+          button(type='submit' class='download-csv-btn' style='margin-left: 20px; padding: 10px;')
+            i.fas.fa-download.fa-2x(style='color:blue')
+    
 
     h1= title
 
@@ -33,6 +40,7 @@ html(lang="en")
       // Search bar
       .search-bar(style='text-align: center; margin-bottom: 20px;')
         input(type='text' id='searchInput' placeholder='Search albums...' style='padding: 10px; width: 300px;')
+        
 
       table(id='albumTable', border=3)
         thead

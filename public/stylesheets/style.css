@@ -48,6 +48,14 @@ td {
   cursor: pointer;
 }
 
+.download-csv-btn {
+  position: absolute;
+  top: 2px;
+  right: 50px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 .modal {
   display: none;
   position: fixed;

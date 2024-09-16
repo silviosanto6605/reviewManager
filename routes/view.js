@@ -56,4 +56,27 @@ router.get('/', function (req, res) {
   db.close();
 });
 
+router.post('/download-csv', function (req, res) {
+  var db = new sqlite3.Database('data.db');
+
+  db.all('SELECT * FROM Album ORDER BY ID ASC', function (err, rows) {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    let csvContent = 'ID,Cover,Nome,Artista,Data,Voto,Genere,Possesso\n';
+    rows.forEach(row => {
+      csvContent += `${row.ID},"${row.Cover}","${row.Nome}","${row.Artista}","${row.Data}",${row.Voto},"${row.Genere}","${row.Possesso}"\n`;
+    });
+
+    // Set headers to indicate file download
+    res.header('Content-Type', 'text/csv');
+    res.attachment('albums.csv');
+    res.send(csvContent);
+  });
+
+  db.close();
+});
+
 module.exports = router;
