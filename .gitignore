@@ -5,3 +5,4 @@ data.db
 .vscode/
 package-lock.json
 main.py
+bun.lockb
