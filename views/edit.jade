@@ -38,31 +38,31 @@ html(lang="en")
 
         p
           | Nome Album:
-          input(type='text' name='name' class='editable' value=album.Nome readonly=true)
+          input(type='text' name='name' class='editable' value=album.Nome readonly=true required)
 
         p
           | Artista:
-          input(type='text' name='artist' class='editable' value=album.Artista readonly=true)
+          input(type='text' name='artist' class='editable' value=album.Artista readonly=true required)
 
         p
           | Data di ascolto:
-          input(type='text' name='date' class='editable' value=album.Data readonly=true)
+          input(type='text' name='date' class='editable' value=album.Data readonly=true required)
 
         p
           | Voto:
-          input(type='number' name='rating' class='editable' value=album.Voto readonly=true)
+          input(type='number' name='rating' min='0' max='10' step="0.25" class='editable' value=album.Voto readonly=true required)
 
         p
           | Possesso:
-          input(type='text' name='possession' class='editable' value=album.Possesso readonly=true)
+          input(type='text' name='possession' class='editable' value=album.Possesso readonly=true required)
 
         p
           | Genere:
-          input(type='text' name='genre' class='editable' value=album.Genere readonly=true)
+          input(type='text' name='genre' class='editable' value=album.Genere readonly=true required)
 
         p#coverInputContainer(style="display: none;")  
         | URL Copertina:
-        input(type='text' id='coverInput' name='cover' class='editable' value=album.Cover readonly=true)
+        input(type='text' id='coverInput' name='cover' class='editable' value=album.Cover readonly=true required)
 
         br
         br
