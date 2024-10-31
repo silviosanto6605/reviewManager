@@ -16,63 +16,68 @@ html(lang="en")
         document.getElementById('edit-button').style.display = 'none';
         document.getElementById('confirm-button').style.display = 'inline-block';
         document.getElementById('coverInputContainer').style.display = 'block';  
+        document.querySelectorAll('.select-editable').forEach(function(element) {
+          element.disabled = false;
+        });
       }
   body
-  a(href='/view') 
-    //back icon fontawesome
-    i.fas.fa-arrow-left.fa-2x
+    a(href='/view') 
+      i.fas.fa-arrow-left.fa-2x
     br
     br
     br
 
+    .album-container(style="display: flex; align-items: flex-start;")
+      .album-cover
+        img(id="albumCoverImage" src=album.Cover alt="Copertina album" width=300)
 
-  .album-container(style="display: flex; align-items: flex-start;")
-    .album-cover
-      img(id="albumCoverImage" src=album.Cover alt="Copertina album" width=300)
+      .album-details(style="margin-left: 20px;")
+        form(action='/edit?id=' + album.ID method='post')
 
-      // Cover URL (in edit mode)
+          p
+            | Nome Album:
+            input(type='text' name='name' class='editable' value=album.Nome readonly=true required)
 
+          p
+            | Artista:
+            input(type='text' name='artist' class='editable' value=album.Artista readonly=true required)
 
-    .album-details(style="margin-left: 20px;")
-      form(action='/edit?id=' + album.ID method='post')
+          p
+            | Data di ascolto:
+            input(type='text' name='date' class='editable' value=album.Data readonly=true required)
 
-        p
-          | Nome Album:
-          input(type='text' name='name' class='editable' value=album.Nome readonly=true required)
+          p
+            | Voto:
+            input(type='number' name='rating' min='0' max='10' step="0.25" class='editable' value=album.Voto readonly=true required)
 
-        p
-          | Artista:
-          input(type='text' name='artist' class='editable' value=album.Artista readonly=true required)
+          .form-group
+            label(for='genre') Genre:
+            select(name='genre' required class='select-editable' disabled)
+              option(value='Hip Hop/Rap' selected=album.Genere === 'Hip Hop/Rap') Hip Hop/Rap
+              option(value='Pop/R&B/Cantautorato' selected=album.Genere === 'Pop/R&B/Cantautorato') Pop/R&B/Cantautorato
+              option(value='Electronic' selected=album.Genere === 'Electronic') Electronic
+              option(value='Rock' selected=album.Genere === 'Rock') Rock
+              option(value='Altro' selected=album.Genere === 'Altro') Altro
 
-        p
-          | Data di ascolto:
-          input(type='text' name='date' class='editable' value=album.Data readonly=true required)
+          .form-group
+            label(for='possession') Possession:
+            select(name='possession' required class='select-editable' disabled)
+              option(value='Posseduto' selected=album.Possesso === 'Posseduto') Posseduto
+              option(value='Non Posseduto' selected=album.Possesso === 'Non Posseduto') Non Posseduto
 
-        p
-          | Voto:
-          input(type='number' name='rating' min='0' max='10' step="0.25" class='editable' value=album.Voto readonly=true required)
+          p#coverInputContainer(style="display: none;")  
+            | URL Copertina:
+            input(type='text' id='coverInput' name='cover' class='editable' value=album.Cover readonly=true required)
 
-        p
-          | Possesso:
-          input(type='text' name='possession' class='editable' value=album.Possesso readonly=true required)
+          br
+          br
+          button(id='edit-button' type='button' style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;" onclick="enableEditMode()")
+            i(class="fas fa-edit") 
+            |  Modifica Album
 
-        p
-          | Genere:
-          input(type='text' name='genre' class='editable' value=album.Genere readonly=true required)
-
-        p#coverInputContainer(style="display: none;")  
-        | URL Copertina:
-        input(type='text' id='coverInput' name='cover' class='editable' value=album.Cover readonly=true required)
-
-        br
-        br
-        button(id='edit-button' type='button' style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;" onclick="enableEditMode()")
-          i(class="fas fa-edit") 
-          |  Modifica Album
-
-        button(id='confirm-button' type='submit' style="display: none; padding: 10px 20px; background-color: #008CBA; color: white; border: none; cursor: pointer;")
-          i(class="fas fa-check")  
-          |  Conferma Modifiche
+          button(id='confirm-button' type='submit' style="display: none; padding: 10px 20px; background-color: #008CBA; color: white; border: none; cursor: pointer;")
+            i(class="fas fa-check")  
+            |  Conferma Modifiche
 
   script.
     // Change image on cover URL change

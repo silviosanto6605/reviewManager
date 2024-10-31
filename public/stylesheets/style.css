@@ -62,7 +62,242 @@ table tr:last-child td:last-child {
 
 /* Button Styles */
 #editButton, #updateButton, .add-album-btn, .download-csv-btn {
-  padding: 10px 20px;
+  padding: 10px 20px;/* General Body Styles */
+  body {
+    padding: 50px;
+    font: 16px "Roboto", sans-serif;
+    background-color: #121212;
+    color: #E0E0E0;
+    line-height: 1.6;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Link Styles */
+  a {
+    color: #00B7FF;
+    transition: color 0.3s ease;
+  }
+  a:hover {
+    color: #1ED760;
+  }
+  
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    margin-top: 20px;
+  }
+  td, th {
+    padding: 12px;
+    border: 1px solid #333;
+    text-align: left;
+    transition: background-color 0.3s ease;
+  }
+  th {
+    background-color: #1f1f1f;
+    color: #E0E0E0;
+    font-weight: 600;
+  }
+  td {
+    background-color: #1a1a1a;
+  }
+  tr:hover td {
+    background-color: #333333;
+  }
+  
+  /* Rounded Table Corners */
+  table tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+  }
+  table tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+  }
+  table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+  }
+  table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+  }
+  
+  /* Button Styles */
+  #editButton, #updateButton, .add-album-btn, .download-csv-btn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: absolute;
+  }
+  .add-album-btn {
+    top: 10px;
+    right: 70px;
+    background-color: #282828;
+  }
+  .download-csv-btn {
+    top: 10px;
+    right: 10px;
+    background-color: #282828;
+  }
+  .add-album-btn:hover, .download-csv-btn:hover {
+    background-color: #444;
+    transform: translateY(-2px);
+  }
+  #editButton {
+    background-color: #444;
+  }
+  #editButton:hover {
+    background-color: #555;
+  }
+  #updateButton {
+    background-color: #4CAF50;
+  }
+  #updateButton:hover {
+    background-color: darkgreen;
+  }
+  
+  /* Album Details Form */
+  .album-details input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    background-color: #333;
+    color: white;
+    margin-top: 8px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  .album-details input:focus {
+    outline: none;
+    border-color: #1DB954;
+    box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+  }
+  
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  }
+  .modal-content {
+    background-color: #222;
+    color: #E0E0E0;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 40%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s ease;
+  }
+  .modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .modal-form {
+    display: flex;
+    flex-direction: column;
+  }
+  .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .form-group label {
+    width: 30%;
+    text-align: right;
+    padding-right: 10px;
+  }
+  .form-group input, .form-group select {
+    width: 65%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background-color: #333;
+    color: white;
+    font-family: "Roboto", sans-serif;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: #1DB954;
+    box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+  }
+  .btn {
+    background-color: green;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+  }
+  .btn:hover {
+    background-color: darkgreen;
+  }
+  .close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .close:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Search Input Styles */
+  /* Search Input Styles */
+  #searchInput {
+    display: block;
+    width: 50%;
+    padding: 12px;
+    border: 1px solid #444;
+    background-color: #333;
+    color: white;
+    margin: 8px auto;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  #searchInput:focus {
+    outline: none;
+    border-color: #1DB954;
+    box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+  }
+  
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
   border-radius: 25px;
   cursor: pointer;
   color: white;
