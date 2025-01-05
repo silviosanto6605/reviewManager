@@ -16,8 +16,59 @@ html(lang="en")
       th.no-sort::after {
         content: '';
       }
-  body
-    // FontAwesome home icon that leads to the home page
+      /* Styles for the cover image zoom */
+      .cover-image-container {
+        position: relative;
+        cursor: pointer;
+      }
+      .cover-image {
+        transition: all 0.3s ease;
+        max-width: 1000px;
+        height: auto;
+      }
+      .cover-image.zoomed {
+        position: fixed;
+        top: 50vh;
+        left: 50vw;
+        transform: translate(-50%, -50%);
+        width: auto; 
+        height: auto; 
+        object-fit: contain; /* Mantiene le proporzioni dell'immagine */
+        z-index: 1001;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      }
+      /* Overlay per l'effetto cinema */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease;
+        z-index: 1000;
+      }
+      .overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      /* Animazione per l'ingrandimento */
+      @keyframes zoomIn {
+        from {
+          width: 100px;
+          height: 100px;
+          opacity: 0;
+        }
+        to {
+          width: 40vw;
+          height: 40vw;
+          opacity: 1;
+        }
+      }
+    body
+      .overlay(id='overlay' onclick='toggleZoom(null)')
     a(href='/')
       i.fas.fa-home.fa-2x
     button(onclick='openModal()' class='add-album-btn')
@@ -68,13 +119,14 @@ html(lang="en")
             tr
               td= row.ID
               td
-                img(src=row.Cover, alt='Image' width='100')
+                .cover-image-container
+                  img.cover-image(src=row.Cover, alt='Image' width='100' onclick='toggleZoom(this)')
               td= row.Nome
               td= row.Artista
               td= row.Data
               td(style=`font-size: 20px; color:${row.Voto < 4 ? "#8B0000" : row.Voto < 5 ? "red" : row.Voto < 6 ? "orange" : row.Voto < 8 ? "darkgreen" : "lightgreen"}`)= row.Voto
               td= row.Genere
-              td(style=`color: ${row.Possesso === 'Non Posseduto' ? '#8B0000' : ''}`)= row.Possesso
+                td(style=`color: ${row.Possesso === 'Non Posseduto' ? '#FF6347' : row.Possesso === 'CD' ? '#8A2BE2' : row.Possesso === 'Vinile' ? '#87CEEB' : ''}`)= row.Possesso
               // Delete icon column
               td
                 form(action='/delete' method='POST')
@@ -118,7 +170,8 @@ html(lang="en")
           .form-group
             label(for='possession') Possession:
             select(name='possession' required)
-              option(value='Posseduto') Posseduto
+              option(value="CD") CD  
+              option(value="Vinile") Vinile  
               option(value='Non Posseduto') Non Posseduto
           button(type='submit' class='btn') Add Album
         // Form to upload CSV file
@@ -191,4 +244,35 @@ html(lang="en")
           var rowText = row.textContent.toLowerCase();
           row.style.display = rowText.includes(searchValue) ? '' : 'none';
         });
+      });
+      function toggleZoom(image) {
+        var overlay = document.getElementById('overlay');
+        
+        if (image) {
+          // Attiva lo zoom
+          image.style.animation = 'zoomIn 0.3s forwards';
+          image.classList.add('zoomed');
+          overlay.classList.add('active');
+          
+          // Blocca lo scroll della pagina
+          document.body.style.overflow = 'hidden';
+        } else {
+          // Disattiva lo zoom
+          var zoomedImage = document.querySelector('.cover-image.zoomed');
+          if (zoomedImage) {
+            zoomedImage.style.animation = 'none';
+            zoomedImage.classList.remove('zoomed');
+            overlay.classList.remove('active');
+            
+            // Ripristina lo scroll della pagina
+            document.body.style.overflow = 'auto';
+          }
+        }
+      }
+
+      // Chiudi con il tasto ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          toggleZoom(null);
+        }
       });

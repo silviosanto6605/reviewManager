@@ -7,6 +7,28 @@ html(lang="en")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css") 
     link(rel='stylesheet' href='/stylesheets/style.css')
 
+    style.
+      /* Styles for the cover image zoom */
+      .cover-image-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .cover-image {
+        transition: transform 0.3s ease;
+      }
+
+      .cover-image.zoomed {
+        transform: scale(2);
+        z-index: 1000;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(2);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
     script.
       function enableEditMode() {
         document.querySelectorAll('.editable').forEach(function(element) {
@@ -60,9 +82,10 @@ html(lang="en")
               option(value='Altro' selected=album.Genere === 'Altro') Altro
 
           .form-group
-            label(for='possession') Possession:
+            label(for='possession') Possesso:
             select(name='possession' required class='select-editable' disabled)
-              option(value='Posseduto' selected=album.Possesso === 'Posseduto') Posseduto
+              option(value='CD' selected=album.Possesso ==='CD') CD 
+              option(value='Vinile' selected=album.Possesso ==='Vinile') Vinile 
               option(value='Non Posseduto' selected=album.Possesso === 'Non Posseduto') Non Posseduto
 
           p#coverInputContainer(style="display: none;")  
@@ -84,3 +107,8 @@ html(lang="en")
     document.getElementById('coverInput').addEventListener('input', function() {
       document.getElementById('albumCoverImage').src = this.value;
     });
+
+    // Toggle zoom on cover image
+    function toggleZoom(image) {
+      image.classList.toggle('zoomed');
+    }
