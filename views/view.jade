@@ -71,7 +71,12 @@ html(lang="en")
       .overlay(id='overlay' onclick='toggleZoom(null)')
     a(href='/')
       i.fas.fa-home.fa-2x
-    button(onclick='openModal()' class='add-album-btn')
+    // Messaggio per utenti non loggati
+    if !user
+      p(style="color: yellow; font-weight: bold; text-align: center; margin: 10px 0;")
+        | Nota: Per apportare modifiche, è necessario effettuare il login.
+    // Bottone add sempre presente: se loggato apre il modal, altrimenti reindirizza al login
+    button(onclick= user ? "openModal()" : "window.location.href='/login'" class='add-album-btn' style= user ? "" : "background-color: gray")
       i.fas.fa-plus.fa-2x(style='color:green')
     form(action='/view/download-csv' method='POST' style='display:inline')
       button(type='submit' class='download-csv-btn' style='margin-left: 20px; padding: 10px;')

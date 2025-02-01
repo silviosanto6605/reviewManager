@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  .login-container(style="max-width: 400px; margin: 50px auto; padding: 20px; background-color: #222; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);")
+    h1(style="text-align: center;")= title
+    if message
+      p(style="color: red; text-align: center;")= message
+    form(action='/login' method='POST')
+      .form-group
+        label(for='username') Username:
+        input(type='text' name='username' required style="width:100%; padding:10px; border-radius:5px; border:1px solid #444; background-color:#333; color:white;")
+      .form-group
+        label(for='password') Password:
+        input(type='password' name='password' required style="width:100%; padding:10px; border-radius:5px; border:1px solid #444; background-color:#333; color:white;")
+      button(type='submit' style="display:block; margin:15px auto; width:80%; padding:10px; border:none; border-radius:5px; background-color:#1DB954; color:white;") Login

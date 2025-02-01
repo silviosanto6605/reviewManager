@@ -3,16 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session'); // <-- aggiunto
 
 var indexRouter = require('./routes/index');
 var edit = require('./routes/edit');
 var view = require('./routes/view');
 var del = require('./routes/delete');
-
-
+var loginRouter = require('./routes/login'); // <-- aggiunto
 
 var app = express();
-
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,11 +22,31 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Configurazione delle sessioni
+app.use(session({
+  secret: 'la_tua_chiave_segreta',
+  resave: false,
+  saveUninitialized: false
+}));
+
+// Rendi disponibile l'utente loggato nelle view
+app.use(function(req, res, next) {
+  res.locals.user = req.session.user;
+  next();
+});
 
 app.use('/', indexRouter);
+app.use('/login', loginRouter);
 app.use('/view', view);
-app.use('/delete', del);
-app.use('/edit', edit);
+
+// Middleware per proteggere le operazioni di modifica/eliminazione
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.user) return next();
+  res.redirect('/login');
+}
+
+app.use('/delete', isAuthenticated, del);
+app.use('/edit', isAuthenticated, edit);
 
 app.use(function(req, res, next) {
   next(createError(404));
