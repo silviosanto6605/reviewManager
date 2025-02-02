@@ -7,4 +7,4 @@ users.db
 package-lock.json
 main.py
 bun.lockb
-docker-compose.yml
+users.db

@@ -10,5 +10,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-
+    environment:
+      USER: "myUser"       # Sostituisci con l'username desiderato
+      PASSWORD: "myPass"   # Sostituisci con la password desiderata
+    command: sh -c "node createUser.js && yarn run start"
     restart: 'unless-stopped'

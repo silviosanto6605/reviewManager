@@ -13,11 +13,8 @@ RUN yarn install
 # Copy the rest of the application files to the container
 COPY . .
 
-# Create the user
-RUN node createUser.js $USER $PASSWORD
-
 # Expose the application port (default Express.js port)
 EXPOSE 5000
 
 # Start the application
-CMD ["yarn","run","start"]
+CMD ["sh", "-c", "node createUser.js && yarn run start"]
