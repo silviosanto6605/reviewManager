@@ -1,12 +1,11 @@
-
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 
-const username = process.argv[2];
-const password = process.argv[3];
+const username = process.env.USER;
+const password = process.env.PASSWORD;
 
 if (!username || !password) {
-  console.error('Usage: node createUser.js <username> <password>');
+  console.error('Usage: USER=<username> PASSWORD=<password> node createUser.js');
   process.exit(1);
 }
 

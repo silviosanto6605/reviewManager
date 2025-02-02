@@ -2,7 +2,9 @@ node_modules/
 yarn.lock
 data.csv
 data.db
+users.db
 .vscode/
 package-lock.json
 main.py
 bun.lockb
+docker-compose.yml
