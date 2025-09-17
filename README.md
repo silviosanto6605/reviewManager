@@ -4,134 +4,201 @@ Review Manager è una semplice applicazione web per gestire e recensire album mu
 
 ## Features
 
-* Add new albums with details such as cover URL, name, artist, date, rating, genre, and possession status
-* Edit existing album entries
-* Delete album entries
-* View a list of all albums with sorting and search functionality
-* Upload album data via CSV files
-* User authentication and session management
-* Docker support for easy deployment
+* Aggiungi nuovi album con dettagli come cover URL, nome, artista, data, valutazione, genere e stato di possesso
+* Modifica album esistenti
+* Elimina album
+* Visualizza lista di tutti gli album con ordinamento e ricerca
+* Carica dati album tramite file CSV
+* Autenticazione utente e gestione sessioni
+* Supporto Docker per deploy facile
 
-## Installazione (sviluppo locale senza Docker)
-
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/silviosanto6605/reviewManager.git
-   cd reviewManager
-   ```
-
-2. Install dependencies:
-   ```sh
-   yarn install
-   ```
-
-3. Create a `.env` file with the following environment variables:
-   ```sh
-   USER=<your-username>
-   PASSWORD=<your-password>
-   ```
-
-4. Create a new user by running:
-   ```sh
-   node createUser.js
-   ```
-
-## Avvio locale
-
-1. Start the application:
-   ```sh
-   yarn start
-   ```
-
-2. Open your browser and navigate to `http://localhost:5000`.
-
-3. Log in with the credentials you created in the installation step.
-
-4. Use the application to manage your music album reviews.
-
-## Avvio con Docker Compose (senza build manuale)
+## Avvio con Docker Compose (raccomandato)
 
 1. Crea `.env` (opzionale, altrimenti usa fallback):
-```
-USER=admin
-PASSWORD=changeme
+```env
+APP_USER=admin
+APP_PASSWORD=changeme
 PORT=5000
 ```
+
 2. Avvia:
-```
-docker compose up -d
-```
-3. Log:
-```
-docker compose logs -f app
-```
-4. Cambiare porta:
-```
-PORT=8081 docker compose up -d
-```
-5. Reset dati (attenzione, perde i database):
-```
-docker compose down
-rm -rf data uploads
-mkdir data uploads
+```bash
 docker compose up -d
 ```
 
-## Avvio con semplice docker run
+3. Apri http://localhost:5000 e login con le credenziali
 
-Costruisci (una volta):
+4. Logs:
+```bash
+docker compose logs -f review-manager
 ```
-docker build -t review-manager .
+
+### Opzioni avanzate Docker Compose
+
+**Porta diversa:**
+```bash
+echo "PORT=8081" >> .env
+docker compose up -d
 ```
-Esegui:
+
+**Reset completo dati:**
+```bash
+docker compose down --volumes --remove-orphans
+rm -rf data uploads *.db
+mkdir -p data uploads  
+docker compose up -d
 ```
+
+**Utente diverso:**
+```bash
+echo -e "APP_USER=myuser\nAPP_PASSWORD=mypass\nPORT=5000" > .env
+docker compose up -d --force-recreate
+```
+
+**Usa immagine pre-built (senza build locale):**
+```bash
+# Rimuovi la sezione 'build:' dal docker-compose.yml, poi:
+docker compose pull
+docker compose up -d
+```
+
+## Avvio con docker run
+
+**Usa immagine da registry:**
+```bash
 docker run --rm -p 5000:5000 \
-   -e USER=admin -e PASSWORD=changeme \
+   -e APP_USER=admin -e APP_PASSWORD=changeme \
    -v "$(pwd)/data:/app/data" -v "$(pwd)/uploads:/app/uploads" \
-   review-manager sh -c "node createUser.js && node ./bin/www"
-```
-Porta alternativa (es. 8080 fuori / 5000 dentro):
-```
-docker run --rm -p 8080:5000 -e USER=admin -e PASSWORD=changeme review-manager sh -c "node createUser.js && node ./bin/www"
-```
-Stessa porta dentro/fuori diversa da default (es. 7000):
-```
-docker run --rm -e PORT=7000 -p 7000:7000 -e USER=admin -e PASSWORD=changeme review-manager sh -c "node createUser.js && node ./bin/www"
+   silviosanto6605/review-manager:latest
 ```
 
-## Variabili supportate
-USER / PASSWORD: createUser.js crea l’utente se non esiste.
-PORT: porta interna (mappata nel compose simmetricamente). Fallback 5000.
+**Build locale:**
+```bash
+docker build -t review-manager .
+docker run --rm -p 5000:5000 \
+   -e APP_USER=admin -e APP_PASSWORD=changeme \
+   -v "$(pwd)/data:/app/data" -v "$(pwd)/uploads:/app/uploads" \
+   review-manager
+```
 
-## Persistenza
-I file `data.db` e `users.db` restano nel volume host `./data`. Uploads in `./uploads`.
+**Porta diversa (8080 host → 5000 container):**
+```bash
+docker run --rm -p 8080:5000 \
+   -e APP_USER=admin -e APP_PASSWORD=changeme \
+   -v "$(pwd)/data:/app/data" -v "$(pwd)/uploads:/app/uploads" \
+   silviosanto6605/review-manager:latest
+```
 
-## File Structure
+**Stessa porta dentro/fuori (7000):**
+```bash
+docker run --rm -p 7000:7000 \
+   -e PORT=7000 -e APP_USER=admin -e APP_PASSWORD=changeme \
+   -v "$(pwd)/data:/app/data" -v "$(pwd)/uploads:/app/uploads" \
+   silviosanto6605/review-manager:latest
+```
 
-* `.github/workflows/docker-image.yml`: (se presente) workflow CI/CD
-* `.gitignore`: Git ignore file
-* `app.js`: Main application file
-* `createUser.js`: Script to create a new user
-* `docker-compose.yml`: Docker Compose configuration file
-* `Dockerfile`: Dockerfile for building the application image
-* `package.json`: Project metadata and dependencies
-* `public/stylesheets/style.css`: CSS styles for the application
-* `routes/delete.js`: Route for deleting album entries
-* `routes/edit.js`: Route for editing and adding album entries
-* `routes/index.js`: Route for the home page
-* `routes/login.js`: Route for user login and logout
-* `routes/view.js`: Route for viewing album entries
-* `views/edit.jade`: View template for editing album entries
-* `views/error.jade`: View template for error pages
-* `views/index.jade`: View template for the home page
-* `views/layout.jade`: Layout template for the application
-* `views/login.jade`: View template for the login page
-* `views/view.jade`: View template for viewing album entries
+**Senza volumi persistenti (dati persi al riavvio):**
+```bash
+docker run --rm -p 5000:5000 \
+   -e APP_USER=admin -e APP_PASSWORD=changeme \
+   silviosanto6605/review-manager:latest
+```
+
+## Sviluppo locale (senza Docker)
+
+1. Clone:
+```bash
+git clone https://github.com/silviosanto6605/reviewManager.git
+cd reviewManager
+```
+
+2. Install dipendenze:
+```bash
+npm install
+```
+
+3. Crea `.env`:
+```bash
+echo -e "APP_USER=admin\nAPP_PASSWORD=changeme\nPORT=5000" > .env
+```
+
+4. Crea utente:
+```bash
+node createUser.js
+```
+
+5. Avvia:
+```bash
+npm start
+```
+
+Oppure tutto in un comando:
+```bash
+APP_USER=admin APP_PASSWORD=changeme node createUser.js && npm start
+```
+
+## Variabili d'ambiente
+
+| Variabile | Descrizione | Default |
+|-----------|-------------|---------|
+| `APP_USER` | Username per login | `admin` |
+| `APP_PASSWORD` | Password per login | `changeme` |
+| `PORT` | Porta applicazione | `5000` |
+| `IMAGE_REGISTRY` | Registry Docker (docker-compose) | `silviosanto6605` |
+| `IMAGE_TAG` | Tag immagine (docker-compose) | `latest` |
+
+**Note:** Le variabili `USER` e `PASSWORD` sono ancora supportate come fallback per compatibilità.
+
+## Persistenza dati
+
+I dati persistono nelle cartelle:
+- `./data/` → Database SQLite (data.db, users.db)
+- `./uploads/` → File CSV caricati
+
+Per backup:
+```bash
+tar -czf backup-$(date +%Y%m%d).tar.gz data/ uploads/
+```
+
+Per ripristino:
+```bash
+tar -xzf backup-YYYYMMDD.tar.gz
+```
+
+## Test funzionalità
+
+Dopo l'avvio, testa:
+1. **Login**: http://localhost:5000/login
+2. **Visualizza DB**: http://localhost:5000/view  
+3. **Aggiungi album**: http://localhost:5000/edit
+4. **Import CSV**: carica file con formato: `ID,Cover,Nome,Artista,Data,Voto,Genere,Possesso`
+
+## Troubleshooting
+
+**Container non si avvia:**
+```bash
+docker compose logs review-manager
+```
+
+**Reset completo:**
+```bash
+docker compose down --volumes --remove-orphans
+docker system prune -f
+rm -rf data uploads *.db
+mkdir -p data uploads
+docker compose up -d --force-recreate
+```
+
+**Problema permessi file:**
+```bash
+sudo chown -R $USER:$USER data uploads
+chmod 755 data uploads
+```
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+I contributi sono benvenuti! Apri un issue o invia una pull request.
 
 ## License
 
-This project is licensed under the MIT License.
+Questo progetto è sotto licenza MIT.
