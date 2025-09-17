@@ -4,7 +4,7 @@ services:
   review-manager:
     container_name: review-manager-app
     # Usa un'immagine già pubblicata se disponibile, altrimenti costruisci localmente.
-    image: ${IMAGE_REGISTRY:-silviosanto6605}/review-manager:${IMAGE_TAG:-latest}
+    image: ${IMAGE_REGISTRY:-silviosanto}/review-manager:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile
