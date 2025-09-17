@@ -7,5 +7,3 @@ Dockerfile*
 .dockerignore
 .env
 stack.env
-uploads/*
-!.gitkeep

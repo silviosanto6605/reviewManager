@@ -13,6 +13,9 @@ RUN yarn install
 # Copy the rest of the application files to the container
 COPY . .
 
+# Ensure uploads directory exists with proper permissions
+RUN mkdir -p uploads && chmod 755 uploads
+
 # Expose the application port (default Express.js port)
 EXPOSE 5000
 
