@@ -1,7 +1,8 @@
 version: '3.8'
 
 services:
-  app:
+  review-manager:
+    container_name: review-manager-app
     # Usa un'immagine già pubblicata se disponibile, altrimenti costruisci localmente.
     image: ${IMAGE_REGISTRY:-silviosanto6605}/review-manager:${IMAGE_TAG:-latest}
     build:
@@ -9,11 +10,11 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-      - stack.env
+      #- stack.env
     environment:
       # Override o valori di fallback (non commitare password reali!)
-      USER: ${USER:-admin}
-      PASSWORD: ${PASSWORD:-changeme}
+      APP_USER: ${APP_USER:-admin}
+      APP_PASSWORD: ${APP_PASSWORD:-changeme}
       PORT: ${PORT:-5000}
     ports:
       - "${PORT:-5000}:${PORT:-5000}"

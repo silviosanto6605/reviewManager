@@ -35,4 +35,4 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm/v7,linux/arm64
         push: true
-        tags: silviosanto/review-manager:latest
+        tags: silviosanto6605/review-manager:latest
