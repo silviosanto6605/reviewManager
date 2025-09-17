@@ -8,3 +8,4 @@ package-lock.json
 main.py
 bun.lockb
 users.db
+data

@@ -1,9 +1,12 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session'); // <-- aggiunto
+var session = require('express-session');
+const { initAll } = require('./config/initDb');
+initAll();
 
 var indexRouter = require('./routes/index');
 var edit = require('./routes/edit');
@@ -24,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configurazione delle sessioni
 app.use(session({
-  secret: 'la_tua_chiave_segreta',
+  secret: 'review_manager_dev_secret',
   resave: false,
   saveUninitialized: false
 }));

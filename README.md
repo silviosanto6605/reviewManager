@@ -1,6 +1,6 @@
 # Review Manager
 
-Review Manager is a web application for managing and reviewing music albums. It allows users to add, edit, view, and delete album entries, as well as upload album data via CSV files. The application is built using Node.js, Express, and SQLite, and it includes user authentication and session management.
+Review Manager è una semplice applicazione web per gestire e recensire album musicali (Node.js + Express + SQLite) con autenticazione base.
 
 ## Features
 
@@ -12,7 +12,7 @@ Review Manager is a web application for managing and reviewing music albums. It 
 * User authentication and session management
 * Docker support for easy deployment
 
-## Installation
+## Installazione (sviluppo locale senza Docker)
 
 1. Clone the repository:
    ```sh
@@ -36,7 +36,7 @@ Review Manager is a web application for managing and reviewing music albums. It 
    node createUser.js
    ```
 
-## Usage
+## Avvio locale
 
 1. Start the application:
    ```sh
@@ -49,20 +49,66 @@ Review Manager is a web application for managing and reviewing music albums. It 
 
 4. Use the application to manage your music album reviews.
 
-## Docker
+## Avvio con Docker Compose (senza build manuale)
 
-To run the application using Docker, follow these steps:
+1. Crea `.env` (opzionale, altrimenti usa fallback):
+```
+USER=admin
+PASSWORD=changeme
+PORT=5000
+```
+2. Avvia:
+```
+docker compose up -d
+```
+3. Log:
+```
+docker compose logs -f app
+```
+4. Cambiare porta:
+```
+PORT=8081 docker compose up -d
+```
+5. Reset dati (attenzione, perde i database):
+```
+docker compose down
+rm -rf data uploads
+mkdir data uploads
+docker compose up -d
+```
 
-1. Build and start the Docker container:
-   ```sh
-   docker-compose up --build
-   ```
+## Avvio con semplice docker run
 
-2. Open your browser and navigate to `http://localhost:5000`.
+Costruisci (una volta):
+```
+docker build -t review-manager .
+```
+Esegui:
+```
+docker run --rm -p 5000:5000 \
+   -e USER=admin -e PASSWORD=changeme \
+   -v "$(pwd)/data:/app/data" -v "$(pwd)/uploads:/app/uploads" \
+   review-manager sh -c "node createUser.js && node ./bin/www"
+```
+Porta alternativa (es. 8080 fuori / 5000 dentro):
+```
+docker run --rm -p 8080:5000 -e USER=admin -e PASSWORD=changeme review-manager sh -c "node createUser.js && node ./bin/www"
+```
+Stessa porta dentro/fuori diversa da default (es. 7000):
+```
+docker run --rm -e PORT=7000 -p 7000:7000 -e USER=admin -e PASSWORD=changeme review-manager sh -c "node createUser.js && node ./bin/www"
+```
+
+## Variabili supportate
+USER / PASSWORD: createUser.js crea l’utente se non esiste.
+PORT: porta interna (mappata nel compose simmetricamente). Fallback 5000.
+
+## Persistenza
+I file `data.db` e `users.db` restano nel volume host `./data`. Uploads in `./uploads`.
 
 ## File Structure
 
-* `.github/workflows/docker-image.yml`: GitHub Actions workflow for deploying to Docker Hub
+* `.github/workflows/docker-image.yml`: (se presente) workflow CI/CD
 * `.gitignore`: Git ignore file
 * `app.js`: Main application file
 * `createUser.js`: Script to create a new user

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 var sqlite3 = require('sqlite3').verbose();
+const { USERS_DB } = require('../config/initDb');
 
 // Rimuoviamo l'array statico degli utenti
 // var users = [ ... ];
@@ -13,7 +14,7 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
   var { username, password } = req.body;
   // Usa il nuovo database per il login
-  var db = new sqlite3.Database('users.db');
+  var db = new sqlite3.Database(USERS_DB);
 
   db.get("SELECT * FROM Users WHERE username = ?", [username], function(err, row) {
     if (err) {
@@ -26,13 +27,15 @@ router.post('/', function(req, res) {
     bcrypt.compare(password, row.password, function(err, result) {
       if (result) {
         req.session.user = row;
+        db.close();
         res.redirect('/view');
       } else {
+        db.close();
         res.render('login', { title: 'Login', message: 'Credenziali non valide' });
       }
     });
   });
-  db.close();
+  // Chiuderemo il DB dopo che le callback hanno finito
 });
 
 router.get('/logout', function(req, res) {
